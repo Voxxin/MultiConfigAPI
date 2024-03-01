@@ -4,28 +4,69 @@ import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 
-public class CycleConfigOption extends EmptyOption {
+public class CycleConfigOption extends AbstractOption {
 
-    private final ArrayList<EmptyOption> cyclableOptions;
+    private final ArrayList<AbstractOption> cyclableOptions;
+    private int index = 0;
 
-    public CycleConfigOption(Component component) {
-        this(component, new ArrayList<>());
+    public CycleConfigOption(String translatableKey) {
+        this(translatableKey, new ArrayList<>());
     }
 
-    public CycleConfigOption(Component component, ArrayList<EmptyOption> cyclableOptions) {
-        super(component);
+    public CycleConfigOption(String translatableKey, ArrayList<AbstractOption> cyclableOptions) {
+        super(translatableKey);
         this.cyclableOptions = cyclableOptions;
     }
 
-    public void addCycleOption(EmptyOption option) {
+    public void addOption(AbstractOption option) {
         this.cyclableOptions.add(option);
     }
 
-    public ArrayList<EmptyOption> getCycles() {
+    public ArrayList<AbstractOption> getOptions() {
         return this.cyclableOptions;
     }
 
-    public EmptyOption getCycle(int index) {
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+
+    /**
+     * Returns you the current option of a specified index.
+     */
+    public AbstractOption getOption(int index) {
         return this.cyclableOptions.get(index);
     }
+
+    /**
+     * Returns you the current option in the index.
+     */
+    public AbstractOption getOption() {
+        return this.cyclableOptions.get(index);
+    }
+
+    /**
+     * Gets you the next value in the cycle.
+     * Once the end is reached, it breaks/nulls.
+     */
+    public AbstractOption getNext() {
+        if (this.cyclableOptions.size() <= this.index) return null;
+        AbstractOption option = this.getOption(this.index);
+        this.index++;
+
+        return option;
+    }
+
+    /**
+     * Gets you the next value in the cycle.
+     * Once the end is reached, it wraps back to the start.
+     */
+    public AbstractOption getNextWrap() {
+        this.index = this.cyclableOptions.size() > this.index ? index : 0;
+        AbstractOption option = this.getOption(this.index);
+        this.index++;
+
+        return option;
+    }
+
 }

@@ -2,11 +2,11 @@ package com.github.voxxin.api.config.option;
 
 import net.minecraft.network.chat.Component;
 
-public class BooleanConfigOption extends EmptyOption {
+public class BooleanConfigOption extends AbstractOption {
     private Boolean optionValue;
 
-    public BooleanConfigOption(Component component, Boolean defaultValue) {
-        super(component);
+    public BooleanConfigOption(String translatableKey, Boolean defaultValue) {
+        super(translatableKey);
         this.optionValue = defaultValue;
     }
 
