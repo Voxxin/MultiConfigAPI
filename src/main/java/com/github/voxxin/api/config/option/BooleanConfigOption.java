@@ -1,7 +1,5 @@
 package com.github.voxxin.api.config.option;
 
-import net.minecraft.network.chat.Component;
-
 public class BooleanConfigOption extends AbstractOption {
     private Boolean optionValue;
 

@@ -1,7 +1,5 @@
 package com.github.voxxin.api.config.option;
 
-import net.minecraft.network.chat.Component;
-
 import java.util.ArrayList;
 
 public class CycleConfigOption extends AbstractOption {

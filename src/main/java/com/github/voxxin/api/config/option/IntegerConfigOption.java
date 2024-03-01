@@ -5,8 +5,9 @@ import org.jetbrains.annotations.NotNull;
 public class IntegerConfigOption extends AbstractOption {
     private int optionValue;
 
-    public IntegerConfigOption(@NotNull String translatableKey, int value) {
+    public IntegerConfigOption(@NotNull String translatableKey, int defaultValue) {
         super(translatableKey);
+        this.optionValue = defaultValue;
     }
 
     public void setValue(int value) {

@@ -1,6 +1,5 @@
 package com.github.voxxin.api.config.option;
 
-import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 public class AbstractOption {

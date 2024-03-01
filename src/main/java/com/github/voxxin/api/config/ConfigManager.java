@@ -1,7 +1,13 @@
 package com.github.voxxin.api.config;
 
 import com.github.voxxin.MultiConfigAPI;
-import com.github.voxxin.api.config.option.*;
+import com.github.voxxin.api.config.option.AbstractOption;
+import com.github.voxxin.api.config.option.BooleanConfigOption;
+import com.github.voxxin.api.config.option.CycleConfigOption;
+import com.github.voxxin.api.config.option.IntegerConfigOption;
+import com.github.voxxin.api.config.option.OptionTypes;
+import com.github.voxxin.api.config.option.SliderConfigOption;
+import com.github.voxxin.api.config.option.StringConfigOption;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
