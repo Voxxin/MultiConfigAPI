@@ -2,6 +2,7 @@ package com.github.voxxin;
 
 import com.github.voxxin.api.config.ConfigManager;
 import com.github.voxxin.api.config.option.BooleanConfigOption;
+import com.github.voxxin.api.config.option.SliderConfigOption;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -25,7 +26,9 @@ public class MultiConfigAPI implements ClientModInitializer {
     public void onInitializeClient() {
         ConfigManager manager = new ConfigManager(MODID);
         BooleanConfigOption toggleCape = new BooleanConfigOption("multiconfigapi.general.boolean", false);
+        SliderConfigOption soundSlider = new SliderConfigOption("multiconfigapi.general.slider", 0, 2, 1);
         System.out.println(toggleCape.getValue());
+        System.out.println(soundSlider.getValue());
 
         /**
          * People add their options, then they have to load the config.
@@ -34,9 +37,11 @@ public class MultiConfigAPI implements ClientModInitializer {
          */
 
         manager.addOption(toggleCape);
+        manager.addOption(soundSlider);
         manager.runOptions();
 
         System.out.println(toggleCape.getValue());
+        System.out.println(soundSlider.getValue());
 
 
         /*

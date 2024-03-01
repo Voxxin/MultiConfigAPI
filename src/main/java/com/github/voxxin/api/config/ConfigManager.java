@@ -1,12 +1,7 @@
 package com.github.voxxin.api.config;
 
 import com.github.voxxin.MultiConfigAPI;
-import com.github.voxxin.api.config.option.AbstractOption;
-import com.github.voxxin.api.config.option.BooleanConfigOption;
-import com.github.voxxin.api.config.option.CycleConfigOption;
-import com.github.voxxin.api.config.option.IntegerConfigOption;
-import com.github.voxxin.api.config.option.OptionTypes;
-import com.github.voxxin.api.config.option.StringConfigOption;
+import com.github.voxxin.api.config.option.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -72,7 +67,6 @@ public class ConfigManager {
 
     public void addOption(AbstractOption option) {
         options.add(option);
-        System.out.println(option.getClass());
     }
 
     private void readOptions(File[] configFiles) {
@@ -103,6 +97,11 @@ public class ConfigManager {
                                         }
                                     }
                                     case INTEGER -> ((IntegerConfigOption) option).setValue(optionObject.get("value").getAsInt());
+                                    case SLIDER -> {
+                                        ((SliderConfigOption) option).setValue(optionObject.get("value").getAsFloat());
+                                        ((SliderConfigOption) option).setMaxValue(optionObject.get("max").getAsFloat());
+                                        ((SliderConfigOption) option).setMinValue(optionObject.get("min").getAsFloat());
+                                    }
                                     case STRING -> ((StringConfigOption) option).setValue(optionObject.get("value").getAsString());
                                 }
 
