@@ -15,7 +15,7 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "com.github.voxxin.multiconfigapi.MultiConfigAPI"
+      "com.github.voxxin.MultiConfigAPI"
     ]
   },
   "mixins": [
