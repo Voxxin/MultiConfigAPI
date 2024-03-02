@@ -35,6 +35,11 @@ public class ArrayOption<T> extends AbstractOption {
         return this.clazz;
     }
 
+    public Boolean arrayType(Class<?> clazz) {
+        return this.clazz == clazz;
+    }
+
+
     private boolean isValid(T element) {
         if (element instanceof Boolean) clazz = Boolean.class;
         if (element instanceof Float) clazz = Float.class;

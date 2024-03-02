@@ -46,7 +46,7 @@ public class MultiConfigAPI implements ClientModInitializer {
 
         ArrayOption<Boolean> test = new ArrayOption<>("test");
         test.addElement(false);
-        System.out.println(test.arrayType() == Boolean.class);
+        System.out.println(" is same type? "+ test.arrayType(Float.class));
 
 //        for (AbstractOption option : configOption.getOptions()) {
 //            if (option.type() == OptionTypes.BOOLEAN) {
