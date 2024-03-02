@@ -88,9 +88,9 @@ public class ConfigManager {
                     case SLIDER -> {
                         JsonObject sliderObj = new JsonObject();
 
-                        sliderObj.addProperty("max", option.getAsSlider().getMaxValue());
-                        sliderObj.addProperty("min", option.getAsSlider().getMinValue());
-                        sliderObj.addProperty("value", option.getAsSlider().getValue());
+                        sliderObj.addProperty(option.getAsSlider().getMax().getTranslationKey(), option.getAsSlider().getMaxValue());
+                        sliderObj.addProperty(option.getAsSlider().getMin().getTranslationKey(), option.getAsSlider().getMinValue());
+                        sliderObj.addProperty(option.getAsSlider().get().getTranslationKey(), option.getAsSlider().getValue());
 
                         jsonOption.add(option.getTranslationKey(), sliderObj);
                     }
