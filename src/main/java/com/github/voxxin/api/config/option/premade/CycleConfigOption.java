@@ -1,4 +1,6 @@
-package com.github.voxxin.api.config.option;
+package com.github.voxxin.api.config.option.premade;
+
+import com.github.voxxin.api.config.option.AbstractOption;
 
 import java.util.ArrayList;
 
@@ -33,14 +35,14 @@ public abstract class CycleConfigOption extends AbstractOption {
     /**
      * Returns you the current option of a specified index.
      */
-    public AbstractOption getOption(int index) {
+    public AbstractOption getValue(int index) {
         return this.cyclableOptions.get(index);
     }
 
     /**
      * Returns you the current option in the index.
      */
-    public AbstractOption getOption() {
+    public AbstractOption getValue() {
         return this.cyclableOptions.get(index);
     }
 
@@ -50,7 +52,7 @@ public abstract class CycleConfigOption extends AbstractOption {
      */
     public AbstractOption getNext() {
         if (this.cyclableOptions.size() <= this.index) return null;
-        AbstractOption option = this.getOption(this.index);
+        AbstractOption option = this.getValue(this.index);
         this.index++;
 
         return option;
@@ -62,7 +64,7 @@ public abstract class CycleConfigOption extends AbstractOption {
      */
     public AbstractOption getNextWrap() {
         this.index = this.cyclableOptions.size() > this.index ? index : 0;
-        AbstractOption option = this.getOption(this.index);
+        AbstractOption option = this.getValue(this.index);
         this.index++;
 
         return option;

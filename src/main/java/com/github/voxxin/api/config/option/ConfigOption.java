@@ -1,55 +1,67 @@
 package com.github.voxxin.api.config.option;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.github.voxxin.api.config.option.premade.CycleConfigOption;
+import com.github.voxxin.api.config.option.premade.SliderConfigOption;
+
+import java.util.ArrayList;
 
 public class ConfigOption {
-    private final Map<String, AbstractOption> options;
+    private final String translationKey;
+    private final ArrayList<AbstractOption> options;
 
-    private ConfigOption(Map<String, AbstractOption> options) {
+    private ConfigOption(String translationKey, ArrayList<AbstractOption> options) {
+        this.translationKey = translationKey;
         this.options = options;
-        /*
-            ConfigOption configOption = new ConfigOption.Builder().addBoolean("", false).build();
-            configOption.getOptions().forEach((option) -> {
-                option.setValue(true);
-            });
-        */
     }
 
-    public Map<String, AbstractOption> getOptions() {
+    public String getTranslationKey() {
+        return translationKey;
+    }
+
+    public ArrayList<AbstractOption> getOptions() {
         return options;
     }
 
     public static class Builder {
-        private Map<String, AbstractOption> options;
-        private Map<String, ConfigOption> extendedOptions;
+        private final String translationKey;
+        private ArrayList<AbstractOption> options = new ArrayList<>();
 
-        public Builder() {
-            this.options = new HashMap<>();
+        public Builder(String translationKey) {
+            this.translationKey = translationKey;
         }
 
         public Builder addBoolean(BooleanConfigOption bool) {
-            this.options.put(bool.getTranslationKey(), bool);
+            this.options.add(bool);
             return this;
         }
 
         public Builder addString(StringConfigOption string) {
-            this.options.put(string.getTranslationKey(), string);
+            this.options.add(string);
             return this;
         }
 
-        public Builder addFloat(IntegerConfigOption flt) {
-            this.options.put(flt.getTranslationKey(), flt);
+        public Builder addFloat(FloatConfigOption flt) {
+            this.options.add(flt);
+            return this;
+        }
+
+        public Builder addSlider(SliderConfigOption slider) {
+            this.options.add(slider);
+            return this;
+        }
+
+        public Builder addCycle(CycleConfigOption cycle) {
+            this.options.add(cycle);
             return this;
         }
 
         public Builder addConfigOption(String translationKey, ConfigOption option) {
-            this.extendedOptions.put(translationKey, option);
+            //this.extendedOptions.put(translationKey, option);
             return this;
         }
 
         public ConfigOption build() {
-            return new ConfigOption(options);
+            return new ConfigOption(this.translationKey, this.options);
         }
     }
 }

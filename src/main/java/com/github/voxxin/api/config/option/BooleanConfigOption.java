@@ -1,6 +1,6 @@
 package com.github.voxxin.api.config.option;
 
-import org.jetbrains.annotations.NotNull;
+import com.github.voxxin.api.config.option.enums.OptionTypes;
 
 public class BooleanConfigOption extends AbstractOption {
     private boolean optionValue;

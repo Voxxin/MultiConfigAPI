@@ -1,5 +1,7 @@
-package com.github.voxxin.api.config.option;
+package com.github.voxxin.api.config.option.premade;
 
+import com.github.voxxin.api.config.option.AbstractOption;
+import com.github.voxxin.api.config.option.enums.OptionTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class SliderConfigOption extends AbstractOption {
