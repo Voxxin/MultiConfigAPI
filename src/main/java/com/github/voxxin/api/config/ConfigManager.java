@@ -29,7 +29,7 @@ public class ConfigManager {
     private final String modId;
     private final File configDirectory;
 
-    private ArrayList<? super AbstractOption> options = new ArrayList<>();
+    private final ArrayList<AbstractOption> options = new ArrayList<>();
 
     public ConfigManager(String modId, File configDirectory) {
         this.modId = modId;
@@ -54,7 +54,7 @@ public class ConfigManager {
                 writer.write("{}");
                 writer.close();
                 MultiConfigAPI.LOGGER.info(String.format("Created config file '%s'", this.configDirectory));
-                this.createOptions();
+                this.saveOptions();
             } catch (IOException ignored) {
                 MultiConfigAPI.LOGGER.error("Could not write config file");
             }
@@ -62,28 +62,40 @@ public class ConfigManager {
 
     }
 
-    private void createOptions() {
-
-    }
-
     /**
      * addOption is the base of our config.
      * It sets the values to be initiated, or updated later on.
      */
-
     public void addOption(AbstractOption option) {
         options.add(option);
+    }
+
+    public void saveOptions() {
+        ArrayList<AbstractOption> copyOfOptions = options;
+        JsonObject buildConfig = new JsonObject();
+
+        for (int indexOfOption = 0; copyOfOptions.size() > indexOfOption; indexOfOption++) {
+            JsonObject jsonOption = new JsonObject();
+            jsonOption.addProperty("type", copyOfOptions.get(indexOfOption).type().name().toLowerCase());
+            jsonOption.addProperty("key", copyOfOptions.get(indexOfOption).getTranslationKey());
+            switch (copyOfOptions.get(indexOfOption).type()) {
+                case BOOLEAN -> {
+                    jsonOption.addProperty("value", copyOfOptions.get(indexOfOption).getTranslationKey());
+                }
+            }
+
+
+        }
     }
 
     private void readOptions(File[] configFiles) {
         for (File file : configFiles) {
             try {
                 FileReader reader = new FileReader(file);
-                JsonObject element = gson.fromJson(reader, JsonElement.class).getAsJsonObject();
-                JsonObject categories = element.getAsJsonObject("categories");
-                for (int i = 0; i < categories.keySet().size(); i++) {
-                    String key = categories.keySet().toArray()[i].toString();
-                    JsonArray category = categories.get(key).getAsJsonArray();
+                JsonObject configFile = gson.fromJson(reader, JsonElement.class).getAsJsonObject();
+                for (int i = 0; i < configFile.keySet().size(); i++) {
+                    String key = configFile.keySet().toArray()[i].toString();
+                    JsonArray category = configFile.get(key).getAsJsonArray();
                     for (JsonElement optionElement : category) {
                         JsonObject optionObject = optionElement.getAsJsonObject();
                         String translationKey = optionObject.get("key").getAsString();

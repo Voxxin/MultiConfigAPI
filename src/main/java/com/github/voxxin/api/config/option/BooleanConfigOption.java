@@ -1,9 +1,11 @@
 package com.github.voxxin.api.config.option;
 
-public class BooleanConfigOption extends AbstractOption {
-    private Boolean optionValue;
+import org.jetbrains.annotations.NotNull;
 
-    public BooleanConfigOption(String translatableKey, Boolean defaultValue) {
+public class BooleanConfigOption extends AbstractOption {
+    private boolean optionValue;
+
+    public BooleanConfigOption(String translatableKey, boolean defaultValue) {
         super(translatableKey);
         this.optionValue = defaultValue;
     }
@@ -12,11 +14,16 @@ public class BooleanConfigOption extends AbstractOption {
         this.optionValue = !optionValue;
     }
 
-    public void setValue(Boolean value) {
+    public void setValue(boolean value) {
         this.optionValue = value;
     }
 
     public boolean getValue() {
         return this.optionValue;
+    }
+
+    @Override
+    public OptionTypes type() {
+        return OptionTypes.BOOLEAN;
     }
 }

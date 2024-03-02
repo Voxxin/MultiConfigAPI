@@ -2,7 +2,8 @@ package com.github.voxxin.api.config.option;
 
 import java.util.ArrayList;
 
-public class CycleConfigOption extends AbstractOption {
+// todo fix this, implement methods
+public abstract class CycleConfigOption extends AbstractOption {
 
     private final ArrayList<AbstractOption> cyclableOptions;
     private int index = 0;

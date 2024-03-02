@@ -23,6 +23,11 @@ public class SliderConfigOption extends AbstractOption {
         return this.currentValue;
     }
 
+    @Override
+    public OptionTypes type() {
+        return OptionTypes.SLIDER;
+    }
+
     public void setMinValue(float value) {
         this.minValue = value;
     }

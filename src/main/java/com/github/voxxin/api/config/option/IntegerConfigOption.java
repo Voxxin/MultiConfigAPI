@@ -14,7 +14,13 @@ public class IntegerConfigOption extends AbstractOption {
         this.optionValue = value;
     }
 
-    public int getValue() {
+    @Override
+    public int getValueAsInt() {
         return this.optionValue;
+    }
+
+    @Override
+    public OptionTypes type() {
+        return OptionTypes.INTEGER;
     }
 }
