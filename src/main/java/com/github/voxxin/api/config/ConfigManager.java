@@ -79,33 +79,7 @@ public class ConfigManager {
             JsonArray buildingCategory = new JsonArray();
             JsonObject jsonOption = new JsonObject();
 
-            for (AbstractOption option : copyOfOption.getOptions()) {
-                switch (option.type()) {
-                    case BOOLEAN -> jsonOption.addProperty(option.getTranslationKey(), option.getAsBoolean().getValue());
-                    case CYCLE -> {
-                        JsonObject cycleObject = new JsonObject();
-
-                        cycleObject.addProperty("selected", option.getAsCycle().getCurrentIndex());
-                        cycleObject.remove("items");
-                        cycleObject.add("items", GSON.toJsonTree(option.getAsCycle().getElements()));
-
-                        jsonOption.add(option.getTranslationKey(), cycleObject);
-                    }
-                    case FLOAT -> jsonOption.addProperty(option.getTranslationKey(), option.getAsFloat().getValue());
-                    case SLIDER -> {
-                        JsonObject sliderObj = new JsonObject();
-
-                        sliderObj.addProperty(option.getAsSlider().getMax().getTranslationKey(), option.getAsSlider().getMaxValue());
-                        sliderObj.addProperty(option.getAsSlider().getMin().getTranslationKey(), option.getAsSlider().getMinValue());
-                        sliderObj.addProperty(option.getAsSlider().get().getTranslationKey(), option.getAsSlider().getValue());
-
-                        jsonOption.add(option.getTranslationKey(), sliderObj);
-                    }
-                    case STRING -> jsonOption.addProperty(option.getTranslationKey(), option.getAsString().getValue());
-                }
-            }
-
-            buildingCategory.add(jsonOption);
+            buildingCategory.add(this.saveOptions(copyOfOption, jsonOption));
             buildConfig.add(copyOfOption.getTranslationKey(), buildingCategory);
         }
 
@@ -117,6 +91,40 @@ public class ConfigManager {
             writer.write(modConfigJson);
             writer.close();
         } catch (Exception e) { throw new RuntimeException(e); }
+    }
+
+    private JsonObject saveOptions(ConfigOption copyOfOption, JsonObject jsonOption) {
+        for (AbstractOption option : copyOfOption.getOptions()) {
+            switch (option.type()) {
+                case BOOLEAN -> jsonOption.addProperty(option.getTranslationKey(), option.getAsBoolean().getValue());
+                case CYCLE -> {
+                    JsonObject cycleObject = new JsonObject();
+
+                    cycleObject.addProperty("selected", option.getAsCycle().getCurrentIndex());
+                    cycleObject.remove("items");
+                    cycleObject.add("items", GSON.toJsonTree(option.getAsCycle().getElements()));
+
+                    jsonOption.add(option.getTranslationKey(), cycleObject);
+                }
+                case FLOAT -> jsonOption.addProperty(option.getTranslationKey(), option.getAsFloat().getValue());
+                case SLIDER -> {
+                    JsonObject sliderObj = new JsonObject();
+
+                    sliderObj.addProperty(option.getAsSlider().getMax().getTranslationKey(), option.getAsSlider().getMaxValue());
+                    sliderObj.addProperty(option.getAsSlider().getMin().getTranslationKey(), option.getAsSlider().getMinValue());
+                    sliderObj.addProperty(option.getAsSlider().get().getTranslationKey(), option.getAsSlider().getValue());
+
+                    jsonOption.add(option.getTranslationKey(), sliderObj);
+                }
+                case STRING -> jsonOption.addProperty(option.getTranslationKey(), option.getAsString().getValue());
+                case OBJECT -> {
+                    JsonObject jsonObject = new JsonObject();
+                    jsonOption.add(option.getTranslationKey(), this.saveOptions(option.getAsObject(), jsonObject));
+                }
+            }
+        }
+
+        return jsonOption;
     }
 
     private void readOptions(File[] configFiles) {

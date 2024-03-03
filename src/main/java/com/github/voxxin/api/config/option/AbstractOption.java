@@ -75,4 +75,10 @@ public abstract class AbstractOption implements Option {
         if (!(this instanceof SliderConfigOption)) throw new IllegalStateException("Not a slider: " + this);
         return (SliderConfigOption)this;
     }
+
+    @Override
+    public ConfigOption getAsObject() {
+        if (!(this instanceof ConfigOption)) throw new IllegalStateException("Not an object: " + this);
+        return (ConfigOption)this;
+    }
 }
