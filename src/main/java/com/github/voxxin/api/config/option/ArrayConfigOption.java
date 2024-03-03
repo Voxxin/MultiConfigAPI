@@ -5,15 +5,19 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public class ArrayOption<T> extends AbstractOption {
+public class ArrayConfigOption<T> extends AbstractOption {
     private final ArrayList<T> arrayElements = new ArrayList<>();
 
-    public ArrayOption(@NotNull String translatableKey) {
+    public ArrayConfigOption(@NotNull String translatableKey) {
         super(translatableKey);
     }
 
+    /**
+     * Adds provided element to array
+     * @throws RuntimeException if the element type is not a supported one
+     */
     public void addElement(T element) {
-        if (!isValid(element)) return;
+        if (!isValid(element)) throw new RuntimeException("Non supported element type for: " + element);
         this.arrayElements.add(element);
     }
 
@@ -25,12 +29,26 @@ public class ArrayOption<T> extends AbstractOption {
         return this.arrayElements.get(index);
     }
 
+    public boolean isEmpty() {
+        return this.arrayElements.isEmpty();
+    }
+
+    public int size() {
+        return this.arrayElements.size();
+    }
+
+    public boolean contains(T element) {
+        return this.arrayElements.contains(element);
+    }
+
     @Override
     public OptionTypes type() {
         return OptionTypes.ARRAY;
     }
 
     private boolean isValid(T element) {
-        return element instanceof Boolean || element instanceof Float || element instanceof String;
+        return element instanceof Boolean ||
+               element instanceof Float ||
+               element instanceof String;
     }
 }

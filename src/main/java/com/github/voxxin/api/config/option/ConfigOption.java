@@ -1,15 +1,17 @@
 package com.github.voxxin.api.config.option;
 
+import com.github.voxxin.api.config.option.enums.OptionTypes;
 import com.github.voxxin.api.config.option.premade.CycleConfigOption;
 import com.github.voxxin.api.config.option.premade.SliderConfigOption;
 
 import java.util.ArrayList;
 
-public class ConfigOption {
+public class ConfigOption extends AbstractOption {
     private final String translationKey;
     private final ArrayList<AbstractOption> options;
 
     private ConfigOption(String translationKey, ArrayList<AbstractOption> options) {
+        super(translationKey);
         this.translationKey = translationKey;
         this.options = options;
     }
@@ -20,6 +22,11 @@ public class ConfigOption {
 
     public ArrayList<AbstractOption> getOptions() {
         return options;
+    }
+
+    @Override
+    public OptionTypes type() {
+        return OptionTypes.OBJECT;
     }
 
     public static class Builder {
@@ -55,8 +62,8 @@ public class ConfigOption {
             return this;
         }
 
-        public Builder addConfigOption(String translationKey, ConfigOption option) {
-            //this.extendedOptions.put(translationKey, option);
+        public Builder addConfigOption(ConfigOption option) {
+            this.options.add(option);
             return this;
         }
 

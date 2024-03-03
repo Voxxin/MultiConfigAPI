@@ -1,73 +1,47 @@
 package com.github.voxxin.api.config.option.premade;
 
-import com.github.voxxin.api.config.option.AbstractOption;
+import com.github.voxxin.api.config.option.ArrayConfigOption;
+import com.github.voxxin.api.config.option.enums.OptionTypes;
 
-import java.util.ArrayList;
-
-// todo fix this, implement methods
-public abstract class CycleConfigOption extends AbstractOption {
-
-    private final ArrayList<AbstractOption> cyclableOptions;
+public class CycleConfigOption<T> extends ArrayConfigOption<T> {
     private int index = 0;
 
     public CycleConfigOption(String translatableKey) {
-        this(translatableKey, new ArrayList<>());
-    }
-
-    public CycleConfigOption(String translatableKey, ArrayList<AbstractOption> cyclableOptions) {
         super(translatableKey);
-        this.cyclableOptions = cyclableOptions;
     }
 
-    public void addOption(AbstractOption option) {
-        this.cyclableOptions.add(option);
-    }
-
-    public ArrayList<AbstractOption> getOptions() {
-        return this.cyclableOptions;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-
-    /**
-     * Returns you the current option of a specified index.
-     */
-    public AbstractOption getValue(int index) {
-        return this.cyclableOptions.get(index);
+    public boolean hasNext() {
+        return this.index < this.size();
     }
 
     /**
-     * Returns you the current option in the index.
+     * @return {@link T} or if it is past the size limit it returns null
      */
-    public AbstractOption getValue() {
-        return this.cyclableOptions.get(index);
+    public T getNext() {
+        if (this.index >= this.size()) return null;
+        return this.getElement(this.index++);
     }
 
     /**
-     * Gets you the next value in the cycle.
-     * Once the end is reached, it breaks/nulls.
+     * Returns the next element, or if it's past the size limit wrap around to 0
+     * @return {@link T}
      */
-    public AbstractOption getNext() {
-        if (this.cyclableOptions.size() <= this.index) return null;
-        AbstractOption option = this.getValue(this.index);
-        this.index++;
-
-        return option;
+    public T getNextWrap() {
+        if ((this.index + 1) > this.size()) this.index = 0;
+        return this.getNext();
     }
 
-    /**
-     * Gets you the next value in the cycle.
-     * Once the end is reached, it wraps back to the start.
-     */
-    public AbstractOption getNextWrap() {
-        this.index = this.cyclableOptions.size() > this.index ? index : 0;
-        AbstractOption option = this.getValue(this.index);
-        this.index++;
-
-        return option;
+    public int getCurrentIndex() {
+        return this.index;
     }
 
+    public void setCurrentIndex(int currentIndex) {
+        if (currentIndex > this.size()) currentIndex = 0;
+        this.index = currentIndex;
+    }
+
+    @Override
+    public OptionTypes type() {
+        return OptionTypes.CYCLE;
+    }
 }

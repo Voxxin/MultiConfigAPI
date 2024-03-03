@@ -12,6 +12,6 @@ public interface Option {
     BooleanConfigOption getAsBoolean();
     FloatConfigOption getAsFloat();
     StringConfigOption getAsString();
-    CycleConfigOption getAsCycle();
+    <T> CycleConfigOption<T> getAsCycle();
     SliderConfigOption getAsSlider();
 }

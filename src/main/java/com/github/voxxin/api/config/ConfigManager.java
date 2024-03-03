@@ -2,6 +2,8 @@ package com.github.voxxin.api.config;
 
 import com.github.voxxin.api.config.option.AbstractOption;
 import com.github.voxxin.api.config.option.ConfigOption;
+import com.github.voxxin.api.config.option.enums.OptionTypes;
+import com.github.voxxin.api.config.option.premade.CycleConfigOption;
 import com.github.voxxin.api.config.option.premade.SliderConfigOption;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -18,7 +20,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ConfigManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -47,7 +48,7 @@ public class ConfigManager {
     }
 
     public String getConfigName() {
-        return configName;
+        return this.configName;
     }
 
     public void runOptions() {
@@ -64,7 +65,7 @@ public class ConfigManager {
      * It sets the values to be initiated, or updated later on.
      */
     public void addOption(@NotNull ConfigOption option) {
-        options.add(option);
+        this.options.add(option);
     }
 
     /**
@@ -74,16 +75,22 @@ public class ConfigManager {
     public void saveOptions() {
         JsonObject buildConfig = new JsonObject();
 
-        for (ConfigOption copyOfOption : (ArrayList<ConfigOption>)options.clone()) {
+        for (ConfigOption copyOfOption : (ArrayList<ConfigOption>)this.options.clone()) {
             JsonArray buildingCategory = new JsonArray();
             JsonObject jsonOption = new JsonObject();
 
             for (AbstractOption option : copyOfOption.getOptions()) {
                 switch (option.type()) {
                     case BOOLEAN -> jsonOption.addProperty(option.getTranslationKey(), option.getAsBoolean().getValue());
-                    //case CYCLE -> {
-                    //    jsonOption.addProperty("values", option.getAsCycle().getOptions());
-                    //}
+                    case CYCLE -> {
+                        JsonObject cycleObject = new JsonObject();
+
+                        cycleObject.addProperty("selected", option.getAsCycle().getCurrentIndex());
+                        cycleObject.remove("items");
+                        cycleObject.add("items", GSON.toJsonTree(option.getAsCycle().getElements()));
+
+                        jsonOption.add(option.getTranslationKey(), cycleObject);
+                    }
                     case FLOAT -> jsonOption.addProperty(option.getTranslationKey(), option.getAsFloat().getValue());
                     case SLIDER -> {
                         JsonObject sliderObj = new JsonObject();
@@ -113,7 +120,6 @@ public class ConfigManager {
     }
 
     private void readOptions(File[] configFiles) {
-        int optionIndex = 0;
         for (File file : configFiles) {
             try {
                 FileReader reader = new FileReader(file);
@@ -122,41 +128,64 @@ public class ConfigManager {
                     String key = configFile.keySet().toArray()[i].toString();
                     JsonArray category = configFile.get(key).getAsJsonArray();
                     for (JsonElement optionElement : category) {
-                        for (ConfigOption configOption : this.options) {
-                            for (AbstractOption option : configOption.getOptions()) {
-                                JsonObject optionObject = optionElement.getAsJsonObject();
-                                for (String optionTranslatableKey : optionObject.keySet()) {
-                                    JsonElement element = optionObject.get(optionTranslatableKey);
-                                    if (element.isJsonPrimitive()) {
-                                        JsonPrimitive primitive = element.getAsJsonPrimitive();
-                                        switch (option.type()) {
-                                            case BOOLEAN -> option.getAsBoolean().setValue(primitive.getAsBoolean());
-                                            case STRING -> option.getAsString().setValue(primitive.getAsString());
-                                            case FLOAT -> option.getAsFloat().setValue(primitive.getAsFloat());
-                                        }
-                                    } else if (element.isJsonObject()) {
-//                                        SliderConfigOption sliderOption = option.getAsSlider();
-//                                        sliderOption.setValue(optionObject.get("value").getAsFloat());
-//                                        sliderOption.setMaxValue(optionObject.get("max").getAsFloat());
-//                                        sliderOption.setMinValue(optionObject.get("min").getAsFloat());
-                                    } else if (element.isJsonArray()) {
-                                        // TODO: 3/1/2024 find out if this works
-                                        List<JsonElement> valuesJsonArray = optionObject.get("values").getAsJsonArray().asList();
-                                        for (int indexOfValue = 0; valuesJsonArray.size() > indexOfValue; indexOfValue++) {
-                                            if (valuesJsonArray.get(indexOfValue).getAsString().equals(optionObject.get("value").getAsString())) {
-                                                option.getAsCycle().setIndex(indexOfValue);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            options.set(optionIndex, configOption);
-                            optionIndex++;
-                        }
+                        this.readOptions(this.options, optionElement);
                     }
                 }
             } catch (FileNotFoundException ingored) {}
         }
+    }
+
+    private void readOptions(ArrayList<ConfigOption> options, JsonElement optionElement) {
+        int optionIndex = 0;
+        for (ConfigOption configOption : options) {
+            for (AbstractOption option : configOption.getOptions()) {
+                JsonObject optionObject = optionElement.getAsJsonObject();
+                for (String optionTranslatableKey : optionObject.keySet()) {
+                    JsonElement element = optionObject.get(optionTranslatableKey);
+                    if (element.isJsonPrimitive()) {
+                        JsonPrimitive primitive = element.getAsJsonPrimitive();
+                        switch (option.type()) {
+                            case BOOLEAN -> option.getAsBoolean().setValue(primitive.getAsBoolean());
+                            case STRING -> option.getAsString().setValue(primitive.getAsString());
+                            case FLOAT -> option.getAsFloat().setValue(primitive.getAsFloat());
+                        }
+                    } else if (element.isJsonObject()) {
+                        JsonObject object = element.getAsJsonObject();
+                        if (object.has("selected") && object.get("selected").isJsonPrimitive() && object.get("selected").getAsJsonPrimitive().isNumber() && option.type() == OptionTypes.CYCLE) {
+                            this.readCycle(object, option.getAsCycle());
+                        } else if (object.has("min") && object.has("max") && option.type() == OptionTypes.SLIDER) {
+                            this.readSlider(object, option.getAsSlider());
+                        } else {
+                            this.readOptions(this.options, element);
+                        }
+                    }
+                }
+            }
+
+            this.options.set(optionIndex, configOption);
+            optionIndex++;
+        }
+    }
+    
+    private void readCycle(JsonObject object, CycleConfigOption cycle) {
+        JsonArray items = object.get("items").getAsJsonArray();
+        JsonPrimitive primitive = items.get(0).getAsJsonPrimitive();
+        Object item = null;
+
+        for (JsonElement elementItem : items) {
+            if (primitive.isString()) item = elementItem.getAsString();
+            if (primitive.isNumber()) item = elementItem.getAsFloat();
+            if (primitive.isBoolean()) item = elementItem.getAsBoolean();
+
+            if (item != null && !cycle.contains(item)) cycle.addElement(item);
+        }
+
+        cycle.setCurrentIndex(object.get("selected").getAsInt());
+    }
+
+    private void readSlider(JsonObject object, SliderConfigOption slider) {
+        slider.setMinValue(object.get("min").getAsFloat());
+        slider.setMaxValue(object.get("max").getAsFloat());
+        slider.setValue(object.get("value").getAsFloat());
     }
 }

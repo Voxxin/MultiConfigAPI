@@ -59,9 +59,9 @@ public abstract class AbstractOption implements Option {
      * @throws IllegalStateException if config option is not a cycle
      */
     @Override
-    public CycleConfigOption getAsCycle() {
+    public <T> CycleConfigOption<T> getAsCycle() {
         if (!(this instanceof CycleConfigOption)) throw new IllegalStateException("Not a cycle: " + this);
-        return (CycleConfigOption)this;
+        return (CycleConfigOption<T>)this;
     }
 
     /**

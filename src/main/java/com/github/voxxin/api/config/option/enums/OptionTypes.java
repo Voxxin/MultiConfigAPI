@@ -5,6 +5,7 @@ public enum OptionTypes {
     BOOLEAN,
     CYCLE,
     FLOAT,
+    OBJECT,
     SLIDER,
     STRING;
 }
