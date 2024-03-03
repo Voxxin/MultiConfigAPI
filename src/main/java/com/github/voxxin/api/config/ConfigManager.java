@@ -1,5 +1,6 @@
 package com.github.voxxin.api.config;
 
+import com.github.voxxin.MultiConfigAPI;
 import com.github.voxxin.api.config.option.AbstractOption;
 import com.github.voxxin.api.config.option.ConfigOption;
 import com.github.voxxin.api.config.option.enums.OptionTypes;
@@ -153,7 +154,10 @@ public class ConfigManager {
                     if (element.isJsonPrimitive()) {
                         JsonPrimitive primitive = element.getAsJsonPrimitive();
                         switch (option.type()) {
-                            case BOOLEAN -> option.getAsBoolean().setValue(primitive.getAsBoolean());
+                            case BOOLEAN -> {
+                                MultiConfigAPI.LOGGER.info(option.getTranslationKey());
+                                option.getAsBoolean().setValue(primitive.getAsBoolean());
+                            }
                             case STRING -> option.getAsString().setValue(primitive.getAsString());
                             case FLOAT -> option.getAsFloat().setValue(primitive.getAsFloat());
                         }
@@ -163,8 +167,11 @@ public class ConfigManager {
                             this.readCycle(object, option.getAsCycle());
                         } else if (object.has("min") && object.has("max") && option.type() == OptionTypes.SLIDER) {
                             this.readSlider(object, option.getAsSlider());
-                        } else {
-                            this.readOptions(this.options, element);
+                        } else if (option.type() == OptionTypes.OBJECT) {
+                            ArrayList<ConfigOption> newOptions = new ArrayList<>();
+                            newOptions.add(option.getAsObject());
+
+                            this.readOptions(newOptions, element);
                         }
                     }
                 }

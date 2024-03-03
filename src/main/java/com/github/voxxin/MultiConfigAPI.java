@@ -38,7 +38,9 @@ public class MultiConfigAPI implements ClientModInitializer {
          * runOptions(); (This will either, create, or load & update the options.)
          */
 
-        ConfigOption subOption = new ConfigOption.Builder("another.option").addBoolean(new BooleanConfigOption("test", true)).build();
+        ConfigOption subOption = new ConfigOption.Builder("another.option")
+                .addBoolean(new BooleanConfigOption("test", true))
+                .build();
 
         ConfigOption configOption = new ConfigOption.Builder("awesome.category")
                 .addBoolean(toggleCape)
