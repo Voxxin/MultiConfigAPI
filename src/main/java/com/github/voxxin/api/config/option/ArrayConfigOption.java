@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 public class ArrayOption<T> extends AbstractOption {
     private final ArrayList<T> arrayElements = new ArrayList<>();
-    private Class<?> clazz;
 
     public ArrayOption(@NotNull String translatableKey) {
         super(translatableKey);
@@ -15,7 +14,7 @@ public class ArrayOption<T> extends AbstractOption {
 
     public void addElement(T element) {
         if (!isValid(element)) return;
-        arrayElements.add(element);
+        this.arrayElements.add(element);
     }
 
     public ArrayList<T> getElements() {
@@ -31,19 +30,7 @@ public class ArrayOption<T> extends AbstractOption {
         return OptionTypes.ARRAY;
     }
 
-    public Class<?> arrayType() {
-        return this.clazz;
-    }
-
-    public Boolean arrayType(Class<?> clazz) {
-        return this.clazz == clazz;
-    }
-
-
     private boolean isValid(T element) {
-        if (element instanceof Boolean) clazz = Boolean.class;
-        if (element instanceof Float) clazz = Float.class;
-        if (element instanceof String) clazz = String.class;
         return element instanceof Boolean || element instanceof Float || element instanceof String;
     }
 }
