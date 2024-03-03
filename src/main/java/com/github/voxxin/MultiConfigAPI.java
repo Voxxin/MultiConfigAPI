@@ -18,10 +18,16 @@ import org.apache.logging.log4j.Logger;
 public class MultiConfigAPI implements ClientModInitializer {
     private static final String MODID = "multiconfigapi";
     private static final String MODNAME = "Multi-Config-API";
-    public static final Logger LOGGER = LogManager.getLogger(MODNAME);
 
     @Override
     public void onInitializeClient() {
+        /*
+         * People add their options, then they have to load the config.
+         * addOption();
+         * runOptions(); (This will either, create, or load & update the options.)
+         */
+
+        /*
         ConfigManager manager = new ConfigManager(MODID);
         BooleanConfigOption toggleCape = new BooleanConfigOption("multiconfigapi.general.boolean", false);
         StringConfigOption whateverString = new StringConfigOption("multiconfigapi.general.string", "this should not appear");
@@ -31,12 +37,6 @@ public class MultiConfigAPI implements ClientModInitializer {
         cycle.addElement("Test 123");
         cycle.addElement("Test 456");
         cycle.addElement("Test 789");
-
-        /*
-         * People add their options, then they have to load the config.
-         * addOption();
-         * runOptions(); (This will either, create, or load & update the options.)
-         */
 
         ConfigOption subOption = new ConfigOption.Builder("another.option")
                 .addBoolean(new BooleanConfigOption("test", true))
@@ -52,6 +52,6 @@ public class MultiConfigAPI implements ClientModInitializer {
 
         manager.addOption(configOption);
         manager.runOptions();
-
+        */
     }
 }

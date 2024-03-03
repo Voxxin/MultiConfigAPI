@@ -1,7 +1,6 @@
 package com.github.voxxin.api.config.option.premade;
 
 import com.github.voxxin.api.config.option.AbstractOption;
-import com.github.voxxin.api.config.option.ConfigOption;
 import com.github.voxxin.api.config.option.FloatConfigOption;
 import com.github.voxxin.api.config.option.enums.OptionTypes;
 import org.jetbrains.annotations.NotNull;

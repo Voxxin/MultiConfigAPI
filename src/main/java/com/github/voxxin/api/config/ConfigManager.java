@@ -1,6 +1,5 @@
 package com.github.voxxin.api.config;
 
-import com.github.voxxin.MultiConfigAPI;
 import com.github.voxxin.api.config.option.AbstractOption;
 import com.github.voxxin.api.config.option.ConfigOption;
 import com.github.voxxin.api.config.option.enums.OptionTypes;
@@ -16,32 +15,40 @@ import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class ConfigManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private final String modId;
     private final File configDirectory;
     private String configName = "config";
 
     private final ArrayList<ConfigOption> options = new ArrayList<>();
 
-    public ConfigManager(@NotNull String modId, @NotNull File configDirectory, @Nullable String configName) {
-        this.modId = modId;
+    /**
+     * @param configDirectory where the config file will be stored.
+     * @param configName can be empty/null, defaults to 'config.json'.
+     */
+    public ConfigManager(@NotNull File configDirectory, @Nullable String configName) {
         this.configDirectory = configDirectory;
         if (configName != null && !configName.isEmpty()) this.configName = configName;
     }
 
+    /**
+     * @param modId used to find the default config directory.
+     * @param configName can be empty/null, defaults to 'config.json'.
+     */
     public ConfigManager(@NotNull String modId, @Nullable String configName) {
-        this(modId, FabricLoader.getInstance().getConfigDir().resolve(modId).toFile(), configName);
+        this(FabricLoader.getInstance().getConfigDir().resolve(modId).toFile(), configName);
     }
 
+    /**
+     * @param modId used to find the default config directory.
+     */
     public ConfigManager(@NotNull String modId) {
-        this(modId, null);
+        this(FabricLoader.getInstance().getConfigDir().resolve(modId).toFile(), null);
     }
 
     public File getConfigDirectory() {
@@ -70,13 +77,12 @@ public class ConfigManager {
     }
 
     /**
-     * Saves the options file
-     * @throws RuntimeException if a file can't be written, it will crash
+     * @throws RuntimeException The options file must save correctly.
      */
     public void saveOptions() {
         JsonObject buildConfig = new JsonObject();
 
-        for (ConfigOption copyOfOption : (ArrayList<ConfigOption>)this.options.clone()) {
+        for (ConfigOption copyOfOption : (ArrayList<ConfigOption>) this.options.clone()) {
             JsonArray buildingCategory = new JsonArray();
             JsonObject jsonOption = new JsonObject();
 
@@ -85,13 +91,15 @@ public class ConfigManager {
         }
 
         String modConfigJson = GSON.toJson(buildConfig);
-        File modConfigFile = new File(this.configDirectory + "/"+ this.configName + ".json");
+        File modConfigFile = new File(this.configDirectory + "/" + this.configName + ".json");
 
         try {
             FileWriter writer = new FileWriter(modConfigFile);
             writer.write(modConfigJson);
             writer.close();
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private JsonObject saveOptions(ConfigOption copyOfOption, JsonObject jsonOption) {
@@ -132,70 +140,63 @@ public class ConfigManager {
         for (File file : configFiles) {
             try {
                 FileReader reader = new FileReader(file);
-                JsonObject configFile = GSON.fromJson(reader, JsonElement.class).getAsJsonObject();
-                for (int i = 0; i < configFile.keySet().size(); i++) {
-                    String key = configFile.keySet().toArray()[i].toString();
-                    JsonArray category = configFile.get(key).getAsJsonArray();
-                    for (JsonElement optionElement : category) {
-                        this.readOptions(this.options, optionElement);
-                    }
-                }
-            } catch (FileNotFoundException ingored) {}
+                JsonObject configFile = GSON.fromJson(reader, JsonObject.class);
+                configFile.entrySet().forEach(entry -> {
+                    JsonArray category = entry.getValue().getAsJsonArray();
+                    category.forEach(optionElement -> this.readOptions(options, optionElement));
+                });
+            } catch (FileNotFoundException ignored) {
+            }
         }
     }
 
     private void readOptions(ArrayList<ConfigOption> options, JsonElement optionElement) {
-        int optionIndex = 0;
-        for (ConfigOption configOption : options) {
-            for (AbstractOption option : configOption.getOptions()) {
+        options.forEach(configOption -> {
+            configOption.getOptions().forEach(option -> {
                 JsonObject optionObject = optionElement.getAsJsonObject();
-                for (String optionTranslatableKey : optionObject.keySet()) {
-                    JsonElement element = optionObject.get(optionTranslatableKey);
-                    if (element.isJsonPrimitive()) {
-                        JsonPrimitive primitive = element.getAsJsonPrimitive();
-                        switch (option.type()) {
-                            case BOOLEAN -> {
-                                MultiConfigAPI.LOGGER.info(option.getTranslationKey());
-                                option.getAsBoolean().setValue(primitive.getAsBoolean());
-                            }
-                            case STRING -> option.getAsString().setValue(primitive.getAsString());
-                            case FLOAT -> option.getAsFloat().setValue(primitive.getAsFloat());
-                        }
-                    } else if (element.isJsonObject()) {
-                        JsonObject object = element.getAsJsonObject();
-                        if (object.has("selected") && object.get("selected").isJsonPrimitive() && object.get("selected").getAsJsonPrimitive().isNumber() && option.type() == OptionTypes.CYCLE) {
-                            this.readCycle(object, option.getAsCycle());
-                        } else if (object.has("min") && object.has("max") && option.type() == OptionTypes.SLIDER) {
-                            this.readSlider(object, option.getAsSlider());
-                        } else if (option.type() == OptionTypes.OBJECT) {
-                            ArrayList<ConfigOption> newOptions = new ArrayList<>();
-                            newOptions.add(option.getAsObject());
+                JsonElement element = optionObject.get(option.getTranslationKey());
+                if (element != null) this.processOption(option, element);
+            });
+        });
+    }
 
-                            this.readOptions(newOptions, element);
-                        }
-                    }
-                }
+    private void processOption(AbstractOption option, JsonElement element) {
+        if (element.isJsonPrimitive()) {
+            JsonPrimitive primitive = element.getAsJsonPrimitive();
+            switch (option.type()) {
+                case BOOLEAN -> option.getAsBoolean().setValue(primitive.getAsBoolean());
+                case STRING -> option.getAsString().setValue(primitive.getAsString());
+                case FLOAT -> option.getAsFloat().setValue(primitive.getAsFloat());
             }
-
-            this.options.set(optionIndex, configOption);
-            optionIndex++;
+        } else if (element.isJsonObject()) {
+            JsonObject object = element.getAsJsonObject();
+            if (option.type() == OptionTypes.CYCLE && object.has("selected") && object.get("selected").isJsonPrimitive() && object.get("selected").getAsJsonPrimitive().isNumber()) {
+                this.readCycle(object, option.getAsCycle());
+            } else if (option.type() == OptionTypes.SLIDER && object.has("min") && object.has("max")) {
+                this.readSlider(object, option.getAsSlider());
+            } else if (option.type() == OptionTypes.OBJECT) {
+                this.readOptions(new ArrayList<>(Collections.singletonList(option.getAsObject())), element);
+            }
         }
     }
-    
+
+
     private void readCycle(JsonObject object, CycleConfigOption cycle) {
-        JsonArray items = object.get("items").getAsJsonArray();
-        JsonPrimitive primitive = items.get(0).getAsJsonPrimitive();
-        Object item = null;
+        JsonArray items = object.getAsJsonArray("items");
+        int selectedIndex = object.get("selected").getAsInt();
 
         for (JsonElement elementItem : items) {
-            if (primitive.isString()) item = elementItem.getAsString();
-            if (primitive.isNumber()) item = elementItem.getAsFloat();
-            if (primitive.isBoolean()) item = elementItem.getAsBoolean();
+            Object item = null;
+            JsonPrimitive primitive = elementItem.getAsJsonPrimitive();
+
+            if (primitive.isString()) item = primitive.getAsString();
+            else if (primitive.isNumber()) item = primitive.getAsFloat();
+            else if (primitive.isBoolean()) item = primitive.getAsBoolean();
 
             if (item != null && !cycle.contains(item)) cycle.addElement(item);
         }
 
-        cycle.setCurrentIndex(object.get("selected").getAsInt());
+        cycle.setCurrentIndex(selectedIndex);
     }
 
     private void readSlider(JsonObject object, SliderConfigOption slider) {
