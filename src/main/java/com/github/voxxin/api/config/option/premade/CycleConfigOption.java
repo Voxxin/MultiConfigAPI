@@ -2,11 +2,12 @@ package com.github.voxxin.api.config.option.premade;
 
 import com.github.voxxin.api.config.option.ArrayConfigOption;
 import com.github.voxxin.api.config.option.enums.OptionTypes;
+import org.jetbrains.annotations.NotNull;
 
 public class CycleConfigOption<T> extends ArrayConfigOption<T> {
     private int index = 0;
 
-    public CycleConfigOption(String translatableKey) {
+    public CycleConfigOption(@NotNull String translatableKey) {
         super(translatableKey);
     }
 

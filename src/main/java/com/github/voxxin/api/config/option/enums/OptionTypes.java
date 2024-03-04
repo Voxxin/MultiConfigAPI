@@ -4,7 +4,7 @@ public enum OptionTypes {
     ARRAY,
     BOOLEAN,
     CYCLE,
-    FLOAT,
+    NUMBER,
     OBJECT,
     SLIDER,
     STRING;

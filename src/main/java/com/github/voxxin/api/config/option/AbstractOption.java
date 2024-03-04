@@ -1,6 +1,6 @@
 package com.github.voxxin.api.config.option;
 
-import com.github.voxxin.Option;
+import com.github.voxxin.api.config.option.inter.Option;
 import com.github.voxxin.api.config.option.premade.CycleConfigOption;
 import com.github.voxxin.api.config.option.premade.SliderConfigOption;
 import org.jetbrains.annotations.NotNull;
@@ -29,15 +29,15 @@ public abstract class AbstractOption implements Option {
     }
 
     /**
-     * Converts AbstractOption to {@link FloatConfigOption}
+     * Converts AbstractOption to {@link NumberConfigOption}
      *
-     * @return {@link FloatConfigOption}
+     * @return {@link NumberConfigOption}
      * @throws IllegalStateException if config option is not a float
      */
     @Override
-    public FloatConfigOption getAsFloat() {
-        if (!(this instanceof FloatConfigOption)) throw new IllegalStateException("Not a float: " + this);
-        return (FloatConfigOption)this;
+    public NumberConfigOption getAsFloat() {
+        if (!(this instanceof NumberConfigOption)) throw new IllegalStateException("Not a float: " + this);
+        return (NumberConfigOption)this;
     }
 
     /**
