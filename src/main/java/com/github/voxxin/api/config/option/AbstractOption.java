@@ -81,4 +81,10 @@ public abstract class AbstractOption implements Option {
         if (!(this instanceof ConfigOption)) throw new IllegalStateException("Not an object: " + this);
         return (ConfigOption)this;
     }
+
+    @Override
+    public ArrayConfigOption getAsArray() {
+        if (!(this instanceof ArrayConfigOption<?>)) throw new IllegalStateException("Not an array: " + this);
+        return (ArrayConfigOption)this;
+    }
 }

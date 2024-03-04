@@ -42,6 +42,11 @@ public class ConfigOption extends AbstractOption {
             return this;
         }
 
+        public Builder addArray(ArrayConfigOption array) {
+            this.options.add(array);
+            return this;
+        }
+
         public Builder addString(StringConfigOption string) {
             this.options.add(string);
             return this;

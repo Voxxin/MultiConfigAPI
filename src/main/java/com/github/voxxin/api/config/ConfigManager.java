@@ -1,6 +1,7 @@
 package com.github.voxxin.api.config;
 
 import com.github.voxxin.api.config.option.AbstractOption;
+import com.github.voxxin.api.config.option.ArrayConfigOption;
 import com.github.voxxin.api.config.option.ConfigOption;
 import com.github.voxxin.api.config.option.enums.OptionTypes;
 import com.github.voxxin.api.config.option.premade.CycleConfigOption;
@@ -17,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 public class ConfigManager {
@@ -105,6 +105,9 @@ public class ConfigManager {
     private JsonObject saveOptions(ConfigOption copyOfOption, JsonObject jsonOption) {
         for (AbstractOption option : copyOfOption.getOptions()) {
             switch (option.type()) {
+                case ARRAY -> {
+                    jsonOption.add(option.getTranslationKey(), GSON.toJsonTree(option.getAsArray().getElements()).getAsJsonArray());
+                }
                 case BOOLEAN -> jsonOption.addProperty(option.getTranslationKey(), option.getAsBoolean().getValue());
                 case CYCLE -> {
                     JsonObject cycleObject = new JsonObject();
@@ -176,10 +179,27 @@ public class ConfigManager {
                 this.readSlider(object, option.getAsSlider());
             } else if (option.type() == OptionTypes.OBJECT) {
                 this.readOptions(new ArrayList<>(Collections.singletonList(option.getAsObject())), element);
+            } else {
+                System.out.println(object);
             }
+        } else if (element.isJsonArray()) {
+            this.readArray(element.getAsJsonArray(), option.getAsArray());
         }
     }
 
+    private void readArray(JsonArray object, ArrayConfigOption baseArray) {
+        for (JsonElement elementItem : object) {
+
+            Object item = null;
+            JsonPrimitive primitive = elementItem.getAsJsonPrimitive();
+
+            if (primitive.isString()) item = primitive.getAsString();
+            else if (primitive.isNumber()) item = primitive.getAsFloat();
+            else if (primitive.isBoolean()) item = primitive.getAsBoolean();
+
+            if (item != null && !baseArray.contains(item)) baseArray.addElement(item);
+        }
+    }
 
     private void readCycle(JsonObject object, CycleConfigOption cycle) {
         JsonArray items = object.getAsJsonArray("items");

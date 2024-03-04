@@ -10,8 +10,6 @@ import com.github.voxxin.api.config.option.StringConfigOption;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 
 @Environment(EnvType.CLIENT)
@@ -27,11 +25,13 @@ public class MultiConfigAPI implements ClientModInitializer {
          * runOptions(); (This will either, create, or load & update the options.)
          */
 
-        /*
         ConfigManager manager = new ConfigManager(MODID);
         BooleanConfigOption toggleCape = new BooleanConfigOption("multiconfigapi.general.boolean", false);
         StringConfigOption whateverString = new StringConfigOption("multiconfigapi.general.string", "this should not appear");
         SliderConfigOption soundSlider = new SliderConfigOption("multiconfigapi.general.slider", 0, 2, 1);
+        ArrayConfigOption<String> array = new ArrayConfigOption<>("multiconfigapi.general.array");
+        array.addElement("minecraft:true");
+
         CycleConfigOption<String> cycle = new CycleConfigOption<>("multiconfig.general.cycle");
         cycle.addElement("Test 000");
         cycle.addElement("Test 123");
@@ -46,12 +46,12 @@ public class MultiConfigAPI implements ClientModInitializer {
                 .addBoolean(toggleCape)
                 .addString(whateverString)
                 .addSlider(soundSlider)
+                .addArray(array)
                 .addCycle(cycle)
                 .addConfigOption(subOption)
                 .build();
 
         manager.addOption(configOption);
         manager.runOptions();
-        */
     }
 }
