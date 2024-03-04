@@ -12,7 +12,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,21 +33,6 @@ public class ConfigManager {
     public ConfigManager(@NotNull File configDirectory, @Nullable String configName) {
         this.configDirectory = configDirectory;
         if (configName != null && !configName.isEmpty()) this.configName = configName;
-    }
-
-    /**
-     * @param modId used to find the default config directory.
-     * @param configName can be empty/null, defaults to 'config.json'.
-     */
-    public ConfigManager(@NotNull String modId, @Nullable String configName) {
-        this(FabricLoader.getInstance().getConfigDir().resolve(modId).toFile(), configName);
-    }
-
-    /**
-     * @param modId used to find the default config directory.
-     */
-    public ConfigManager(@NotNull String modId) {
-        this(FabricLoader.getInstance().getConfigDir().resolve(modId).toFile(), null);
     }
 
     public File getConfigDirectory() {

@@ -1,4 +1,4 @@
-package com.github.voxxin;
+package com.github.voxxin.api.config.option.inter;
 
 import com.github.voxxin.api.config.option.*;
 import com.github.voxxin.api.config.option.premade.CycleConfigOption;

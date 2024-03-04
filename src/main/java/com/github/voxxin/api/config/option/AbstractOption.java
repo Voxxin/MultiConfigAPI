@@ -1,6 +1,6 @@
 package com.github.voxxin.api.config.option;
 
-import com.github.voxxin.Option;
+import com.github.voxxin.api.config.option.inter.Option;
 import com.github.voxxin.api.config.option.premade.CycleConfigOption;
 import com.github.voxxin.api.config.option.premade.SliderConfigOption;
 import org.jetbrains.annotations.NotNull;
