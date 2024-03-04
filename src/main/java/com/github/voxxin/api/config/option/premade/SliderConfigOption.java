@@ -1,21 +1,21 @@
 package com.github.voxxin.api.config.option.premade;
 
 import com.github.voxxin.api.config.option.AbstractOption;
-import com.github.voxxin.api.config.option.FloatConfigOption;
+import com.github.voxxin.api.config.option.NumberConfigOption;
 import com.github.voxxin.api.config.option.enums.OptionTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class SliderConfigOption extends AbstractOption {
-    private FloatConfigOption minValue;
-    private FloatConfigOption maxValue;
-    private FloatConfigOption currentValue;
+    private NumberConfigOption minValue;
+    private NumberConfigOption maxValue;
+    private NumberConfigOption currentValue;
 
     public SliderConfigOption(@NotNull String translatableKey, float minValue, float maxValue, float defaultValue) {
         super(translatableKey);
 
-        this.currentValue = new FloatConfigOption("value", defaultValue);
-        this.minValue = new FloatConfigOption("min", minValue);
-        this.maxValue = new FloatConfigOption("max", maxValue);
+        this.currentValue = new NumberConfigOption("value", defaultValue);
+        this.minValue = new NumberConfigOption("min", minValue);
+        this.maxValue = new NumberConfigOption("max", maxValue);
     }
 
     @Override
@@ -28,10 +28,10 @@ public class SliderConfigOption extends AbstractOption {
     }
 
     public float getValue() {
-        return this.currentValue.getValue();
+        return this.currentValue.getValueAsFloat();
     }
 
-    public FloatConfigOption get() {
+    public NumberConfigOption get() {
         return this.currentValue;
     }
 
@@ -40,9 +40,9 @@ public class SliderConfigOption extends AbstractOption {
     }
 
     public float getMinValue() {
-        return this.minValue.getValue();
+        return this.minValue.getValueAsFloat();
     }
-    public FloatConfigOption getMin() {
+    public NumberConfigOption getMin() {
         return this.minValue;
     }
 
@@ -51,9 +51,9 @@ public class SliderConfigOption extends AbstractOption {
     }
 
     public float getMaxValue() {
-        return this.maxValue.getValue();
+        return this.maxValue.getValueAsFloat();
     }
-    public FloatConfigOption getMax() {
+    public NumberConfigOption getMax() {
         return this.maxValue;
     }
 

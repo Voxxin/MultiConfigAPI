@@ -14,7 +14,7 @@ public class ArrayConfigOption<T> extends AbstractOption {
 
     /**
      * Adds provided element to array
-     * @throws RuntimeException if the element type is not a supported one
+     * @throws RuntimeException if the element type is not supported
      */
     public void addElement(T element) {
         if (!isValid(element)) throw new RuntimeException("Non supported element type for: " + element);
@@ -49,6 +49,8 @@ public class ArrayConfigOption<T> extends AbstractOption {
     private boolean isValid(T element) {
         return element instanceof Boolean ||
                element instanceof Float ||
+               element instanceof Integer ||
+               element instanceof Double ||
                element instanceof String;
     }
 }

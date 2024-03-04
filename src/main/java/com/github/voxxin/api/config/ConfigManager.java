@@ -15,7 +15,11 @@ import com.google.gson.JsonPrimitive;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -106,7 +110,7 @@ public class ConfigManager {
 
                     jsonOption.add(option.getTranslationKey(), cycleObject);
                 }
-                case FLOAT -> jsonOption.addProperty(option.getTranslationKey(), option.getAsFloat().getValue());
+                case NUMBER -> jsonOption.addProperty(option.getTranslationKey(), option.getAsFloat().getValueAsFloat());
                 case SLIDER -> {
                     JsonObject sliderObj = new JsonObject();
 
@@ -157,7 +161,7 @@ public class ConfigManager {
             switch (option.type()) {
                 case BOOLEAN -> option.getAsBoolean().setValue(primitive.getAsBoolean());
                 case STRING -> option.getAsString().setValue(primitive.getAsString());
-                case FLOAT -> option.getAsFloat().setValue(primitive.getAsFloat());
+                case NUMBER -> option.getAsFloat().setValue(primitive.getAsFloat());
             }
         } else if (element.isJsonObject()) {
             JsonObject object = element.getAsJsonObject();

@@ -1,11 +1,12 @@
 package com.github.voxxin.api.config.option;
 
 import com.github.voxxin.api.config.option.enums.OptionTypes;
+import org.jetbrains.annotations.NotNull;
 
 public class BooleanConfigOption extends AbstractOption {
     private boolean optionValue;
 
-    public BooleanConfigOption(String translatableKey, boolean defaultValue) {
+    public BooleanConfigOption(@NotNull String translatableKey, boolean defaultValue) {
         super(translatableKey);
         this.optionValue = defaultValue;
     }
