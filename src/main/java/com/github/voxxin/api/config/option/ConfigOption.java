@@ -53,7 +53,7 @@ public class ConfigOption extends AbstractOption {
             return this;
         }
 
-        public Builder addFloat(@NotNull NumberConfigOption flt) {
+        public Builder addNumber(@NotNull NumberConfigOption flt) {
             this.options.add(flt);
             return this;
         }

@@ -13,6 +13,10 @@ repositories {
 dependencies {
     implementation group: 'org.jetbrains', name: 'annotations', version: '24.1.0'
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
+
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.8.2'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.8.2'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.8.2'
 }
 
 processResources {
@@ -41,7 +45,6 @@ jar {
     }
 }
 
-// configure the maven publication
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -51,4 +54,8 @@ publishing {
 
     repositories {
     }
+}
+
+test {
+    useJUnitPlatform()
 }
