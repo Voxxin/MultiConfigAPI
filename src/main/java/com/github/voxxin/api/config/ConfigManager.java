@@ -35,6 +35,10 @@ public class ConfigManager {
         if (configName != null && !configName.isEmpty()) this.configName = configName;
     }
 
+    public ConfigManager(@NotNull File configDirectory) {
+        this(configDirectory, null);
+    }
+
     public File getConfigDirectory() {
         return this.configDirectory;
     }
