@@ -25,6 +25,10 @@ public class ConfigOption extends AbstractOption {
         return options;
     }
 
+    public AbstractOption getOption(String translationKey) {
+        return options.stream().filter(option -> option.getTranslationKey().equals(translationKey)).findFirst().orElse(null);
+    }
+
     @Override
     public OptionTypes type() {
         return OptionTypes.OBJECT;

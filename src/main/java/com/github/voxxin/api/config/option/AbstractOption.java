@@ -35,7 +35,7 @@ public abstract class AbstractOption implements Option {
      * @throws IllegalStateException if config option is not a float
      */
     @Override
-    public NumberConfigOption getAsFloat() {
+    public NumberConfigOption getAsNumber() {
         if (!(this instanceof NumberConfigOption)) throw new IllegalStateException("Not a float: " + this);
         return (NumberConfigOption)this;
     }

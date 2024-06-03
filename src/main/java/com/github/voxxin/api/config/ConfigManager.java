@@ -110,7 +110,7 @@ public class ConfigManager {
 
                     jsonOption.add(option.getTranslationKey(), cycleObject);
                 }
-                case NUMBER -> jsonOption.addProperty(option.getTranslationKey(), option.getAsFloat().getValueAsFloat());
+                case NUMBER -> jsonOption.addProperty(option.getTranslationKey(), option.getAsNumber().getValueAsFloat());
                 case SLIDER -> {
                     JsonObject sliderObj = new JsonObject();
 
@@ -161,7 +161,7 @@ public class ConfigManager {
             switch (option.type()) {
                 case BOOLEAN -> option.getAsBoolean().setValue(primitive.getAsBoolean());
                 case STRING -> option.getAsString().setValue(primitive.getAsString());
-                case NUMBER -> option.getAsFloat().setValue(primitive.getAsFloat());
+                case NUMBER -> option.getAsNumber().setValue(primitive.getAsFloat());
             }
         } else if (element.isJsonObject()) {
             JsonObject object = element.getAsJsonObject();

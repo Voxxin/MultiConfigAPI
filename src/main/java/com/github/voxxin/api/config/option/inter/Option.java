@@ -8,7 +8,7 @@ import com.github.voxxin.api.config.option.premade.SliderConfigOption;
 public interface Option {
     OptionTypes type();
     BooleanConfigOption getAsBoolean();
-    NumberConfigOption getAsFloat();
+    NumberConfigOption getAsNumber();
     StringConfigOption getAsString();
     <T> CycleConfigOption<T> getAsCycle();
     SliderConfigOption getAsSlider();
