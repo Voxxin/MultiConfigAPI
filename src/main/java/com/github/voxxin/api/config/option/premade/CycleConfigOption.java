@@ -36,6 +36,10 @@ public class CycleConfigOption<T> extends ArrayConfigOption<T> {
         return this.index;
     }
 
+    public T getCurrentElement() {
+        return this.getElement(this.index);
+    }
+
     public void setCurrentIndex(int currentIndex) {
         if (currentIndex > this.size()) currentIndex = 0;
         this.index = currentIndex;
