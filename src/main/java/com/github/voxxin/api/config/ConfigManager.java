@@ -161,7 +161,7 @@ public class ConfigManager {
             switch (option.type()) {
                 case BOOLEAN -> option.getAsBoolean().setValue(primitive.getAsBoolean());
                 case STRING -> option.getAsString().setValue(primitive.getAsString());
-                case NUMBER -> option.getAsNumber().setValue(primitive.getAsFloat());
+                case NUMBER -> option.getAsNumber().setValue(primitive.getAsLong());
             }
         } else if (element.isJsonObject()) {
             JsonObject object = element.getAsJsonObject();
@@ -212,8 +212,8 @@ public class ConfigManager {
     }
 
     private void readSlider(JsonObject object, SliderConfigOption slider) {
-        slider.setMinValue(object.get("min").getAsFloat());
-        slider.setMaxValue(object.get("max").getAsFloat());
-        slider.setValue(object.get("value").getAsFloat());
+        slider.setMinValue(object.get("min").getAsLong());
+        slider.setMaxValue(object.get("max").getAsLong());
+        slider.setValue(object.get("value").getAsLong());
     }
 }
