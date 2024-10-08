@@ -6,11 +6,11 @@ import com.github.voxxin.api.config.option.enums.OptionTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class SliderConfigOption extends AbstractOption {
-    private NumberConfigOption minValue;
-    private NumberConfigOption maxValue;
-    private NumberConfigOption currentValue;
+    private final NumberConfigOption minValue;
+    private final NumberConfigOption maxValue;
+    private final NumberConfigOption currentValue;
 
-    public SliderConfigOption(@NotNull String translatableKey, float minValue, float maxValue, float defaultValue) {
+    public SliderConfigOption(@NotNull String translatableKey, long minValue, long maxValue, long defaultValue) {
         super(translatableKey);
 
         this.currentValue = new NumberConfigOption("value", defaultValue);
@@ -23,35 +23,35 @@ public class SliderConfigOption extends AbstractOption {
         return OptionTypes.SLIDER;
     }
 
-    public void setValue(float value) {
+    public void setValue(long value) {
         this.currentValue.setValue(value);
     }
 
-    public float getValue() {
-        return this.currentValue.getValueAsFloat();
+    public long getValue() {
+        return this.currentValue.getValueAsLong();
     }
 
     public NumberConfigOption get() {
         return this.currentValue;
     }
 
-    public void setMinValue(float value) {
+    public void setMinValue(long value) {
         this.minValue.setValue(value);
     }
 
-    public float getMinValue() {
-        return this.minValue.getValueAsFloat();
+    public long getMinValue() {
+        return this.minValue.getValueAsLong();
     }
     public NumberConfigOption getMin() {
         return this.minValue;
     }
 
-    public void setMaxValue(float value) {
+    public void setMaxValue(long value) {
         this.maxValue.setValue(value);
     }
 
-    public float getMaxValue() {
-        return this.maxValue.getValueAsFloat();
+    public long getMaxValue() {
+        return this.maxValue.getValueAsLong();
     }
     public NumberConfigOption getMax() {
         return this.maxValue;
